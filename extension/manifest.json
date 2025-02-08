@@ -1,21 +1,26 @@
 {
     "manifest_version": 3,
-    "name": "Google Docs AI Helper",
+    "name": "AI Google Docs Assistant",
     "version": "1.0",
-    "description": "Use AI to enhance Google Docs.",
-    "permissions": ["storage", "activeTab", "scripting"],
+    "description": "Auto-complete and enhance text in Google Docs using OpenAI.",
+    "permissions": ["scripting", "activeTab", "storage"],
     "host_permissions": ["https://docs.google.com/*"],
     "background": {
       "service_worker": "background.js"
-    },
-    "action": {
-      "default_popup": "popup.html"
     },
     "content_scripts": [
       {
         "matches": ["https://docs.google.com/document/*"],
         "js": ["content.js"]
       }
-    ]
+    ],
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+      }
+    }
   }
   
