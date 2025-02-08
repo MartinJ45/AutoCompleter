@@ -3,14 +3,14 @@
     "name": "AI Google Docs Assistant",
     "version": "1.0",
     "description": "Auto-complete and enhance text in Google Docs using OpenAI.",
-    "permissions": ["scripting", "activeTab", "storage"],
+    "permissions": ["activeTab", "contextMenus", "storage"],
     "host_permissions": ["https://docs.google.com/*"],
     "background": {
       "service_worker": "background.js"
     },
     "content_scripts": [
       {
-        "matches": ["https://docs.google.com/document/*"],
+        "matches": ["https://docs.google.com/*"],
         "js": ["content.js"]
       }
     ],
