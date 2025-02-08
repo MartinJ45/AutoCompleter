@@ -68,6 +68,83 @@ function authenticate() {
     });
 }
 
+// Function to get document content using Google Docs API
+function getDocumentContent(documentId, token, message) {
+    const url = `https://docs.googleapis.com/v1/documents/${documentId}`;
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Document content:', data);
+
+        // Extract text content from the document
+        const documentContent = extractTextFromDoc(data);
+        console.log('Extracted text:', documentContent);
+
+        const {startIndex, endIndex} = findTextIndicesInDoc(documentContent, message);
+
+        console.log("start index:", startIndex, " End index:", endIndex);
+
+        return {startIndex, endIndex};
+    })
+    .catch(error => {
+        console.error('Error getting document content:', error);
+        return null;
+    });
+}
+
+// Function to extract plain text from Google Docs document structure
+function extractTextFromDoc(document) {
+    let text = '';
+    document.body.content.forEach(element => {
+        if (element.paragraph) {
+            element.paragraph.elements.forEach(paraElement => {
+                if (paraElement.textRun) {
+                    text += paraElement.textRun.content;
+                }
+            });
+        }
+    });
+    return text;
+}
+
+function findTextIndicesInDoc(documentContent, searchString) {
+    // Log both strings to check what we're searching for
+    console.log("Document Content:", documentContent);
+    console.log("Search String:", searchString);
+
+    if (typeof documentContent !== 'string' || typeof searchString !== 'string') {
+        console.error("Both documentContent and searchString must be strings.");
+        return null;  // Or handle error as necessary
+    }
+
+    // Remove leading/trailing spaces and make both the document content and search string lowercase to handle case-insensitive search
+    const normalizedDocumentContent = documentContent.trim().toLowerCase();
+    const normalizedSearchString = searchString.trim().toLowerCase();
+
+    // Find the start index of the search string within the normalized document content
+    const startIndex = normalizedDocumentContent.indexOf(normalizedSearchString);
+
+    // If the string is not found, return null or handle the case as needed
+    if (startIndex === -1) {
+        console.log("Text not found.");
+        return null;  // or handle the case where text is not found
+    }
+
+    // Calculate the end index based on the start index and the length of the search string
+    const endIndex = startIndex + normalizedSearchString.length;
+
+    console.log("start:", startIndex);
+    console.log("end:", endIndex);
+
+    return { startIndex, endIndex };
+}
+
 // Insert text into Google Docs using Google Docs API
 function insertTextIntoDoc(documentId, index, text, token) {
     const requests = [{
@@ -90,6 +167,33 @@ function insertTextIntoDoc(documentId, index, text, token) {
     .then(response => response.json())
     .then(data => console.log('Text inserted:', data))
     .catch(error => console.error('Error inserting text:', error));
+}
+
+function deleteTextFromDoc(documentId, startIndex, endIndex, token) {
+    const requests = [{
+        deleteContentRange: {
+            range: {
+                startIndex: startIndex,
+                endIndex: endIndex
+            }
+        }
+    }];
+
+    const batchUpdateRequest = { requests: requests };
+
+    fetch(`https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(batchUpdateRequest),
+    })
+    .then(response => response.json())
+    .then(data => console.log('Text deleted:', data))
+    .catch(error => console.error('Error deleting text:', error));
+
+    console.log("deleted");
 }
 
 
@@ -133,7 +237,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 const openaiResponse = response.choices[0].message.content;
                 console.log("Response:", openaiResponse);
 
-                insertIntoDoc(openaiResponse);
+                insertIntoDoc(openaiResponse, message.selection);
 
                 // chrome.tabs.sendMessage({response: openaiResponse});
             }).catch(error => {
@@ -148,14 +252,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 });
 
-function insertIntoDoc(message) {
+function insertIntoDoc(message, original) {
     authenticate().then(token => {
         const documentId = "1-TCq-ZNtM67KRGP7f0FQrUa2-s87FmYrvC1wNXYi_qo";
         insertTextIntoDoc(documentId, 1, message, token);
+        // deleteTextFromDoc(documentId, 1, 10, token);
+
+        const {start, end} = getDocumentContent(documentId, token, original);
+        deleteTextFromDoc(documentId, start, end, token);
     }).catch(error => {
         console.error('Error authenticating:', error);
     });
 }
-
-
-
