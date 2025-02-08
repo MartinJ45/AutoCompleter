@@ -17,4 +17,6 @@ async def main():
         ]
     )
 
+    print(chat_completion)
+
 asyncio.run(main())
