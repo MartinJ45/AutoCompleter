@@ -54,6 +54,45 @@ const apiKey = "sk-proj-aXIUYXX9RDEUNJjpYMG5p7IGRKeQPTUeoNdrr_Zify6i70kJ2YOrJuuX
 
 console.log("Backend loaded");
 
+// Initialize the OAuth2 flow and get the access token
+function authenticate() {
+    return new Promise((resolve, reject) => {
+        chrome.identity.getAuthToken({interactive: true}, function(token) {
+            if (chrome.runtime.lastError || !token) {
+                console.log("Unsuccessful authentication:", chrome.runtime.lastError);
+                reject('Authentication failed');
+            } else {
+                resolve(token);  // token is your access token for Google APIs
+            }
+        });
+    });
+}
+
+// Insert text into Google Docs using Google Docs API
+function insertTextIntoDoc(documentId, index, text, token) {
+    const requests = [{
+        insertText: {
+            location: { index: index },
+            text: text,
+        },
+    }];
+
+    const batchUpdateRequest = { requests: requests };
+
+    fetch(`https://docs.googleapis.com/v1/documents/${documentId}:batchUpdate`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(batchUpdateRequest),
+    })
+    .then(response => response.json())
+    .then(data => console.log('Text inserted:', data))
+    .catch(error => console.error('Error inserting text:', error));
+}
+
+
 async function getResponse(selection) {
     console.log("Selected text:", selection);
 
@@ -67,14 +106,14 @@ async function getResponse(selection) {
             body: JSON.stringify({
                 "model": "gpt-3.5-turbo",
                 "messages": [
-                    {"role": "system", "content": "You are a helpful assistant."},
-                    {"role": "user", "content": "Echo " + selection}
+                    {"role": "system", "content": "You are a helpful assistant who suggests autocompleted sentences"},
+                    {"role": "user", "content": "Finish the sentence: " + selection}
                 ]
             })
         })
-    
-        let data = await response.json();
-    
+        
+        const data = await response.json();
+
         return data;
     } catch (error) {
         console.error("Error fetching OpenAI response:", error);
@@ -84,10 +123,39 @@ async function getResponse(selection) {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("Recieved message: ", message);
+
     if (message.selection !== undefined) {
-        let response = getResponse(message.selection);
-        console.log(response);
+        const wordCount = message.selection.trim().split(/\s+/).length;
+        console.log("Word count:", wordCount);
+
+        if (wordCount > 4) {
+            getResponse(message.selection).then(response => {
+                const openaiResponse = response.choices[0].message.content;
+                console.log("Response:", openaiResponse);
+
+                insertIntoDoc(openaiResponse);
+
+                // chrome.tabs.sendMessage({response: openaiResponse});
+            }).catch(error => {
+                console.error("Error:", error);
+                sendResponse({error: "Error"});
+            });
+        } else {
+            console.log("Word count is less than 4");
+        }
+
+        return true;
     }
 });
+
+function insertIntoDoc(message) {
+    authenticate().then(token => {
+        const documentId = "1-TCq-ZNtM67KRGP7f0FQrUa2-s87FmYrvC1wNXYi_qo";
+        insertTextIntoDoc(documentId, 1, message, token);
+    }).catch(error => {
+        console.error('Error authenticating:', error);
+    });
+}
+
 
 
