@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "Google Docs AI Helper",
+    "version": "1.0",
+    "description": "Use AI to enhance Google Docs.",
+    "permissions": ["storage", "activeTab", "scripting"],
+    "host_permissions": ["https://docs.google.com/*"],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://docs.google.com/document/*"],
+        "js": ["content.js"]
+      }
+    ]
+  }
+  
