@@ -1,57 +1,3 @@
-// chrome.runtime.onInstalled.addListener(() => {
-//     console.log("Extension installed!");
-// });
-
-// // Function to interact with your Python Flask API (test.py server)
-// async function fetchAIResponse(inputText) {
-//     try {
-//         const response = await fetch('http://localhost:5000/chat', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({
-//                 message: inputText
-//             })
-//         });
-
-//         const data = await response.json();
-//         return data.reply;  // The response from OpenAI will be here
-//     } catch (error) {
-//         console.error("Error calling AI API:", error);
-//         return "Error occurred while contacting the AI.";
-//     }
-// }
-
-// // Listen for extension icon clicks or messages from content script
-// chrome.action.onClicked.addListener((tab) => {
-//     chrome.scripting.executeScript({
-//         target: {tabId: tab.id},
-//         func: enhanceText
-//     });
-// });
-
-// async function enhanceText() {
-//     const selection = window.getSelection().toString().trim();
-//     if (!selection) {
-//         alert("Please select some text in Google Docs.");
-//         return;
-//     }
-
-//     const aiReply = await fetchAIResponse(selection);
-
-//     // Replace selected text with AI response
-//     document.execCommand('insertText', false, aiReply);
-// }
-
-// import OpenAI from "https://cdn.jsdelivr.net/npm/openai@4.14.0";
-
-// const openai  = new OpenAI({
-//     apiKey: "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"
-// });
-
-const apiKey = "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"
-
 console.log("Backend loaded");
 
 // Initialize the OAuth2 flow and get the access token
@@ -198,6 +144,18 @@ function deleteTextFromDoc(documentId, startIndex, endIndex, token) {
 
 
 async function getResponse(selection) {
+    const data = await new Promise((resolve) => {
+        chrome.storage.sync.get("apiKey", resolve);
+    });
+
+    if (!data.apiKey) {
+        console.log("No API key found");
+        return null;
+    }
+
+    const apiKey = data.apiKey;
+
+    console.log("Got API Key");
     console.log("Selected text:", selection);
 
     try {
@@ -234,6 +192,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         if (wordCount > 4) {
             getResponse(message.selection).then(response => {
+                if (response == null) {
+                    console.log("There was an error getting the response");
+                    return null;
+                }
+
                 const openaiResponse = response.choices[0].message.content;
                 console.log("Response:", openaiResponse);
 
