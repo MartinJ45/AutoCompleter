@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
     <title>AI Helper</title>
-    <script defer src="popup.js"></script>  <!-- Ensure script loads AFTER HTML -->
+    <script defer src="popup.js"></script>
+    <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <!-- <button id="analyze">Analyze Text</button> -->
-    <h3>Cursor Position:</h3>
-    <p id="cursorpos">Loading...</p>
+    <div class="popup-container">
+        <h2>Hello!</h2>
+        <form id="api-form">
+            <label for="api-key">API key:</label>
+            <input type="password" id="api-key" name="api-key" required>
+            <button id="submit-button" type="submit">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
