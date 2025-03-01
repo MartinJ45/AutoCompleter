@@ -1,25 +1,8 @@
-// document.addEventListener("DOMContentLoaded", () => {
-//     const analyzeButton = document.getElementById("analyze");
+console.log("Popup");
 
-//     if (analyzeButton) {
-//         analyzeButton.addEventListener("click", () => {
-//             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-//                 chrome.tabs.sendMessage(tabs[0].id, { action: "fetchText" }, (response) => {
-//                     if (response?.text) {
-//                         chrome.runtime.sendMessage({ action: "callAI", text: response.text }, (reply) => {
-//                             document.getElementById("output").textContent = reply?.reply || "Error";
-//                         });
-//                     }
-//                 });
-//             });
-//         });
-//     } else {
-//         console.error("Button #analyze not found in the DOM.");
-//     }
-// });
-
-chrome.runtime.onMessage.addListener((message) => {
-    if (message.curosrIndex !== undefined) {
-        document.getElementById("cursorpos").innerText = message.cursorIndex;
-    }
-})
+document.getElementById("api-form").addEventListener("submit", getKey);
+function getKey() {
+    let apiKey = document.getElementById("api-key").value;
+    chrome.storage.sync.set({apiKey: apiKey});
+    console.log("API key set to", apiKey);
+}
