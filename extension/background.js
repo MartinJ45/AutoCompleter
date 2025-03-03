@@ -99,7 +99,13 @@ function extractTextFromDoc(document) {
     return text;
 }
 
-// Function to get document content using Google Docs API
+/*
+Params: documentId - the id of the Google Doc
+        token - the access token for authentication
+        message - the text being found in the doc
+Returns: The start and end index of the text in the doc if successful; null if there
+         is an error. 
+*/
 async function getDocumentContent(documentId, token, message) {
     const url = `https://docs.googleapis.com/v1/documents/${documentId}`;
 
@@ -127,6 +133,14 @@ async function getDocumentContent(documentId, token, message) {
     }
 }
 
+/*
+Params: documentId - the id of the Google Doc
+        startIndex - the start index of the text to delete
+        endIndex - the end index of the text to delete
+        token - the access token for authentication
+Returns: The text deleted if successful; null if there is an error
+Description: Deletes the text from the doc at the specified index.
+*/
 async function deleteTextFromDoc(documentId, startIndex, endIndex, token) {
     console.log("Deleting from " + startIndex + " to " + endIndex);
 
