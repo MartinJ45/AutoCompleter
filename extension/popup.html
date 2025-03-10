@@ -7,11 +7,17 @@
 </head>
 <body>
     <div class="popup-container">
-        <h2>Hello!</h2>
-        <form id="api-form">
-            <label for="api-key">API key:</label>
-            <input type="password" id="api-key" name="api-key" required>
-            <button id="submit-button" type="submit">Submit</button>
+        <h2>Google Docs Assistant</h2>
+        <form class="form-container" id="api-form" onsubmit="return false;">
+            <label for="api-key">
+                <p>Please enter your API key</p>
+                <p id="current-apikey">Current key: </p>
+            </label>
+            <p id="error-message">Couldn't verify API key</p>
+            <div class="button-container">
+                <input class="input-field" type="password" id="api-key" name="api-key" required>
+                <button class="submit-button" id="submit-button" type="submit">Enter</button>
+            </div>
         </form>
     </div>
 </body>
