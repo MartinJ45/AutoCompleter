@@ -1,3 +1,4 @@
-# AutoCompleter
+### Description
 
-We're chefs about to cook up an AutoCompleter 🔥
+An AI-powered Google Docs autocompletion extension that enhances your writing. 
+Powered by the OpenAI API. 
