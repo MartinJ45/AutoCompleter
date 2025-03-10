@@ -1,6 +1,25 @@
 .popup-container {
     position: relative;
     width: 200px;
-    height: 150px;
+    height: 200px;
     padding: 20px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-field {
+    border-radius: 5px;
+}
+
+.submit-button {
+    border-radius: 5px;
+}
+
+#error-message {
+    color: red;
+    display: none;
 }
