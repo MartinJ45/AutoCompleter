@@ -36,15 +36,11 @@ async function getResponse(selection) {
                 "messages": [
                     {"role": "system", "content": 
                         "You are a helpful assistant that autocompletes sentences in Google Docs. \
-            You will receive an incomplete sentence and must provide a continuation while preserving \
-            the original text. The response must always start with the given sentence and extend it \
-            naturally. Your response must be in the format of: <original sentence> ..."},
+            You will receive an incomplete sentence and must provide a continuation."},
                     {"role": "user", "content": `${selection}`}
                 ]
             })
         })
-
-        console.log("version 2");
         
         const data = await response.json();
 
@@ -239,10 +235,10 @@ async function insertAutoCompletion(response, selection) {
         // Deletes the selected text
         const {start, end} = await getDocumentContent(documentId, token, selection);
         console.log("Start:", start, "End:", end);
-        await deleteTextFromDoc(documentId, start, end, token);
+        // await deleteTextFromDoc(documentId, start, end, token);
 
         // Inserts the response into the doc
-        await insertTextIntoDoc(documentId, start, response, token);
+        await insertTextIntoDoc(documentId, end+1, response, token);
     } catch (error) {
         console.error('Error authenticating:', error);
         return false;
