@@ -5,7 +5,7 @@
     "description": "Auto-complete and enhance text in Google Docs using OpenAI.",
     "permissions": ["activeTab", "contextMenus", "storage", "identity"],
     "oauth2": {
-      "client_id": "976432212553-kg919fli0jabmslefk6u1jjv9rhgpga9.apps.googleusercontent.com",
+      "client_id": "976432212553-q82l9r726omuvjp9mu035mla5k9vujfi.apps.googleusercontent.com",
       "scopes": ["https://www.googleapis.com/auth/documents", "https://www.googleapis.com/auth/drive.file"]
     },
     "host_permissions": ["https://docs.google.com/*", "https://www.googleapis.com/*"],

@@ -57,3 +57,18 @@ async function getKey() {
         document.getElementById("error-message").style.display = "block";
     }
 }
+
+const toggle = document.getElementById("toggle_visibility");
+toggle.addEventListener("click", () => {
+    const input = document.getElementById("api-key");
+    const btn = document.getElementById("toggle_eye");
+    if (input.type === "password") {
+        input.type = "text"
+        btn.classList.remove("fa-eye")
+        btn.classList.add("fa-eye-slash")
+    } else {
+        input.type = "password"
+        btn.classList.remove("fa-eye-slash")
+        btn.classList.add("fa-eye")
+    }
+});
