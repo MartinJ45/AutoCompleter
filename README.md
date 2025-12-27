@@ -1,4 +1,4 @@
-# AI Google Docs Autocomplete Extension
+# <img src="extension/icon.png" alt="AI Google Docs Assistant" width="40"/> AI Google Docs Autocomplete Extension
 An AI-powered chrome extension that enhances your writing directly inside Google Docs, powered by the OpenAI API. 
 This extension integrates with Google Docs to suggest context aware completions to unfinished sentences, accelerating writing workflows without leaving the document. 
 
