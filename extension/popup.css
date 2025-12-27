@@ -1,7 +1,6 @@
 .popup-container {
-    position: relative;
     width: 500px;
-    height: 250px;
+    box-sizing: border-box;
 }
 
 #error-message {
