@@ -1,22 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>AI Helper</title>
-    <script defer src="popup.js"></script>
     <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="libs/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="libs/fontawesome/css/all.min.css">
+    <script defer src="popup.js"></script>
 </head>
-<body>
-    <div class="popup-container">
-        <h2>Google Docs Assistant</h2>
-        <form class="form-container" id="api-form" onsubmit="return false;">
-            <label for="api-key">
-                <p>Please enter your API key</p>
-                <p id="current-apikey">Current key: </p>
-            </label>
-            <p id="error-message">Couldn't verify API key</p>
-            <div class="button-container">
-                <input class="input-field" type="password" id="api-key" name="api-key" required>
-                <button class="submit-button" id="submit-button" type="submit">Enter</button>
+<body class="d-flex flex-column justify-content-center popup-container">
+    <div class="p-3">
+        <h3>Google Docs Assistant</h3>
+        <form class="form-container" id="api-form">
+            <div class="d-flex flex-column mb-3">
+                <p class="text-secondary">Connect your API key to get started</p>
+                <div class="form-check form-switch">
+                    <label class="form-check-label" for="enable-switch" id="enable-switch-label">Disable Autocomplete</label>
+                    <input class="form-check-input" type="checkbox" role="switch" id="enable-switch" checked>
+                </div>
+                <p id="current-apikey" class="m-0">Current key: </p>
+            </div>
+            
+            <div class="d-flex flex-column">
+                <div class="input-group mb-2">
+                    <span class="input-group-text">
+                        <i class="fa-solid fa-lock"></i>
+                    </span>
+                    <input type="password" class="form-control" placeholder="Enter your API key..." id="api-key" name="api-key" required>
+                    <button class="btn btn-outline-secondary" type="button" id="toggle-visibility">
+                        <i id="toggle_eye" class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <p id="error-message" class="fs-6 mb-2">Couldn't verify API key</p>
+                <button class="btn btn-primary" id="submit-button" type="submit">Save & Connect</button>
             </div>
         </form>
     </div>
