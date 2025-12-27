@@ -58,7 +58,8 @@ async function getKey() {
     }
 }
 
-const toggle = document.getElementById("toggle_visibility");
+// Password visibility logic
+const toggle = document.getElementById("toggle-visibility");
 toggle.addEventListener("click", () => {
     const input = document.getElementById("api-key");
     const btn = document.getElementById("toggle_eye");
@@ -72,3 +73,34 @@ toggle.addEventListener("click", () => {
         btn.classList.add("fa-eye")
     }
 });
+
+const enable_switch = document.getElementById("enable-switch");
+
+// Gets the status of the extension on reload
+chrome.storage.local.get(["extension_enabled"], (result) => {
+    const is_enabled = result.extension_enabled !== false;
+
+    enable_switch.checked = is_enabled;
+    toggle_state(enable_switch.checked);
+})
+// Updates extension_enabled which is used by content.js and popup.js
+enable_switch.addEventListener("change", (e) => {
+    chrome.storage.local.set({
+        extension_enabled: e.target.checked
+    });
+
+    toggle_state(enable_switch.checked);
+});
+
+/*
+Params: is_enabled - whether or not the extension is currently enabled
+Description: disables/enables different UI states of the popup
+*/
+function toggle_state(is_enabled) {
+    document.getElementById("submit-button").disabled = !is_enabled;
+    document.getElementById("api-key").disabled = !is_enabled;
+    document.getElementById("toggle-visibility").disabled = !is_enabled
+    document.getElementById("current-apikey").style.display = is_enabled ? "block" : "none";
+    document.getElementById("enable-switch-label").textContent = is_enabled ? "Disable Autocomplete" : "Enable Autocomplete";
+    document.getElementById("error-message").style.display = "none";
+}
