@@ -226,11 +226,9 @@ Returns: none
 Description: Inserts the response into the doc and deletes the selected text from the
              doc.
 */
-async function insertAutoCompletion(response, selection) {
+async function insertAutoCompletion(response, selection, documentId) {
     try {
         const token = await authenticate();
-        // Document ID of the Google Doc - will eventually be dynamic
-        const documentId = "1-TCq-ZNtM67KRGP7f0FQrUa2-s87FmYrvC1wNXYi_qo";
 
         // Deletes the selected text
         const {start, end} = await getDocumentContent(documentId, token, selection);
@@ -270,7 +268,7 @@ chrome.runtime.onMessage.addListener((message) => {
                 console.log("Response:", openaiResponse);
 
                 // Inserts the response into the doc
-                insertAutoCompletion(openaiResponse, message.selection);
+                insertAutoCompletion(openaiResponse, message.selection, message.documentId);
                 return true;
             }).catch(error => {
                 console.error("Error:", error);

@@ -9,12 +9,16 @@ document.addEventListener("click", () => {
     if (is_enabled) {
       console.log("Clack");
 
+      // Gets the documentId
+      const pattern = window.location.href.match(/document\/d\/([a-zA-z0-9-_]+)/);
+      const documentId = pattern ? pattern[1] : null;
+
       // Gets the users selected text
       document.querySelector(".docs-texteventtarget-iframe").contentDocument.execCommand("copy");
       const selectedText = document.querySelector(".docs-texteventtarget-iframe").contentDocument.body.innerText
 
       if (chrome.runtime?.id) {
-        chrome.runtime.sendMessage({selection: selectedText});
+        chrome.runtime.sendMessage({selection: selectedText, documentId: documentId});
       } else {
         console.error("Extension not loaded properly.");
       } 
